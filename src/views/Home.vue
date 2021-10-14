@@ -3,7 +3,7 @@ import { mainStore } from "../store/pinia";
 import { NButton, NH1 } from "naive-ui";
 
 const store = mainStore()
-const emit = defineEmits(['changeTheme'])
+defineEmits(['changeTheme'])
 </script>
 
 <template>
