@@ -10,6 +10,10 @@
     "beforeBuildCommand": ""
   },
   "tauri": {
+    "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    },
     "bundle": {
       "active": true,
       "targets": "all",
@@ -49,15 +53,23 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "globalShortcut": {
+        "all": true
+      }
     },
     "windows": [
       {
         "title": "Unicorn 🦄",
+        "label": "main",
         "width": 800,
         "height": 600,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "center": true,
+        "skipTaskbar": true,
+        "visible": false,
+        "decorations": false
       }
     ],
     "security": {

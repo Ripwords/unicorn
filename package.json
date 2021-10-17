@@ -2,12 +2,13 @@
   "name": "unicorn",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -k \"vue-devtools\" \"pnpm vt dev\"",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "vt": "vite-tauri"
   },
   "dependencies": {
+    "@tauri-apps/api": "^1.0.0-beta.8",
     "@vueuse/core": "^6.5.3",
     "pinia": "^2.0.0-rc.13",
     "vue": "^3.2.16",
@@ -16,9 +17,11 @@
   "devDependencies": {
     "@iconify/json": "^1.1.414",
     "@vitejs/plugin-vue": "^1.9.3",
+    "concurrently": "^6.3.0",
     "naive-ui": "^2.19.7",
     "typescript": "^4.4.3",
     "unplugin-icons": "^0.12.15",
+    "unplugin-vue-components": "^0.15.6",
     "vite": "^2.6.4",
     "vite-plugin-tauri": "^0.1.3",
     "vue-tsc": "^0.3.0"

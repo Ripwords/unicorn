@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { NConfigProvider, NGlobalStyle, darkTheme } from "naive-ui";
+import { darkTheme } from "naive-ui";
 import { ref } from "vue";
 import { mainStore } from "./store/pinia";
+import { appWindow } from "@tauri-apps/api/window";
+import { useRouter } from "vue-router";
 
 const store = mainStore()
+const router = useRouter()
 const theme = ref()
 theme.value = store.theme == 'light' ? null : darkTheme
 
@@ -11,6 +14,14 @@ const changeTheme = () => {
   theme.value = theme.value == null ? darkTheme : null
   store.theme = theme.value == null ? 'light' : 'dark'
 }
+
+appWindow.listen("settings", async () => {
+  console.log("i heard")
+  await appWindow.show()
+  await appWindow.setAlwaysOnTop(true)
+  await appWindow.center()
+  router.push("/settings")
+})
 </script>
 
 <template>
@@ -21,12 +32,8 @@ const changeTheme = () => {
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.center {
+  display: flex;
+  justify-content: center;
 }
 </style>
