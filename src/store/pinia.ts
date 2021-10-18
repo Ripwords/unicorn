@@ -5,7 +5,8 @@ export const mainStore = defineStore('main', {
   state: () => {
     return {
       dec: useStorage('dec', 4),
-      theme: useStorage('theme', 'light')
+      theme: useStorage('theme', 'light'),
+      mode: useStorage('mode', "quick")
     }
   }
 })

@@ -50,11 +50,7 @@
       }
     },
     "updater": {
-      "active": true,
-      "endpoints": [
-        "https://github.com/Ripwords/unicorn/releases/download/{{current_version}}/unicorn_{{current_version}}_x64.msi"
-      ],
-      "dialog": true
+      "active": false
     },
     "allowlist": {
       "all": true,
