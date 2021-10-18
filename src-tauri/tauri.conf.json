@@ -67,9 +67,7 @@
         "resizable": true,
         "fullscreen": false,
         "center": true,
-        "skipTaskbar": true,
-        "visible": false,
-        "decorations": false
+        "visible": false
       }
     ],
     "security": {

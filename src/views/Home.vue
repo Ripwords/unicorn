@@ -1,33 +1,11 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import { mainStore } from "../store/pinia";
-import { appWindow } from "@tauri-apps/api/window";
-import { register, unregisterAll } from "@tauri-apps/api/globalShortcut";
 
 // Required because the event listener is at router-view
 defineEmits(['changeTheme'])
 
+// Variables
 const store = mainStore()
-const visible = ref(false)
-
-// register global shortcut
-unregisterAll()
-register("CmdOrControl+U", async () => {
-  await appWindow.setFocus()
-  if (visible.value) {
-    await appWindow.hide()
-    visible.value = false
-  } else {
-    await appWindow.show()
-    visible.value = true
-  }
-})
-
-appWindow.listen("tauri://blur", () => {
-  if (visible.value) {
-    visible.value = false
-  }
-})
 </script>
 
 <template>

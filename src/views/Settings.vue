@@ -2,10 +2,16 @@
 import { useRouter } from "vue-router";
 import { appWindow } from "@tauri-apps/api/window";
 import { ref } from "vue";
+import { mainStore } from "../store/pinia";
 
 defineEmits(['changeTheme'])
 
+// Variables
+const store = mainStore()
 const theme = ref("dark")
+const router = useRouter()
+
+// Functions
 const changeIcon = () => {
   if (theme.value === "dark") {
     theme.value = "light"
@@ -14,10 +20,13 @@ const changeIcon = () => {
   }
 }
 
-const router = useRouter()
-const save = async () => {
+const done = async () => {
   await appWindow.setAlwaysOnTop(false)
-  await appWindow.hide()
+  if (store.mode == "companion") {
+    await appWindow.minimize()
+  } else if (store.mode == "quick") {
+    await appWindow.hide()
+  }
   router.push("/home")
 }
 </script>
@@ -31,6 +40,11 @@ const save = async () => {
     </n-button>
   </div>
   <div class="center">
-    <n-button @click="save()">Save</n-button>
+    <n-button @click="store.mode = 'companion'">Companion</n-button>
+    <n-button @click="store.mode = 'quick'">Quick</n-button>
+  </div>
+  <br>
+  <div class="center">
+    <n-button @click="done()">Done</n-button>
   </div>
 </template>
