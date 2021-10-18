@@ -4,6 +4,19 @@ import { ref } from "vue";
 import { mainStore } from "./store/pinia";
 import { appWindow } from "@tauri-apps/api/window";
 import { useRouter } from "vue-router";
+import { checkUpdate, installUpdate } from "@tauri-apps/api/updater";
+import { relaunch } from "@tauri-apps/api/process";
+
+// check for updates
+try {
+  const { shouldUpdate } = await checkUpdate()
+  if (shouldUpdate) {
+    await installUpdate()
+    await relaunch()
+  }
+} catch (err) {
+  console.error(err)
+}
 
 const store = mainStore()
 const router = useRouter()
