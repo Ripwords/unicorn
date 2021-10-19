@@ -37,7 +37,6 @@ fn main() {
             std::process::exit(0);
           }
           "settings" => {
-            println!("settings button pressed");
             app.emit_all("settings", Payload { message: "Settings button is pressed !".into()}).unwrap();
           }
           _ => {}

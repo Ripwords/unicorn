@@ -1,38 +1,66 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import { appWindow } from "@tauri-apps/api/window";
+import { appWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { ref } from "vue";
 import { mainStore } from "../store/pinia";
+import { useMessage } from "naive-ui";  
 
-defineEmits(['changeTheme'])
+defineEmits(mainStore().emits)
 
 // Variables
 const store = mainStore()
 const theme = ref("dark")
 const router = useRouter()
+const message = useMessage()
 
 // Functions
 const changeIcon = () => {
   if (theme.value === "dark") {
     theme.value = "light"
+    message.info("Light Mode")
   } else {
     theme.value = "dark"
+    message.info("Dark Mode")
   }
 }
 
 const done = async () => {
   await appWindow.setAlwaysOnTop(false)
-  if (store.mode == "companion") {
-    await appWindow.minimize()
-  } else if (store.mode == "quick") {
+  await appWindow.setSize(new PhysicalSize(800, 350))
+  if (store.mode == "quick") {
     await appWindow.hide()
   }
   router.push("/home")
 }
+
+const updateGradient_1 = (value: any) => {
+  store.gradient_1 = value
+}
+
+const updateGradient_2 = (value: any) => {
+  store.gradient_2 = value
+}
+
+const companionMode = () => {
+  store.mode = "companion"
+  message.info("Companion Mode")
+}
+
+const quickMode = () => {
+  store.mode = "quick"
+  message.info("Quick Mode")
+}
 </script>
 
 <template>
-  <n-h1 class="center" style="margin-top: 25px;">Settings</n-h1>
+  <n-h1 class="center" style="margin-top: 25px;">
+    <n-gradient-text
+      :gradient="{
+        from: store.gradient_1,
+        to: store.gradient_2
+      }"
+    >Settings</n-gradient-text>
+  </n-h1>
   <div class="center">
     <n-button @click="$emit('changeTheme'); changeIcon()">
       <i-akar-icons:moon-fill v-if="theme === 'dark'"></i-akar-icons:moon-fill>
@@ -40,8 +68,14 @@ const done = async () => {
     </n-button>
   </div>
   <div class="center">
-    <n-button @click="store.mode = 'companion'">Companion</n-button>
-    <n-button @click="store.mode = 'quick'">Quick</n-button>
+    <n-button @click="companionMode()">Companion</n-button>
+    <n-button @click="quickMode()">Quick</n-button>
+  </div>
+  <div class="center">
+    <n-color-picker style="width: 30%;" :value="store.gradient_1" @update:value="updateGradient_1"></n-color-picker>
+  </div>
+  <div class="center">
+    <n-color-picker style="width: 30%;" :value="store.gradient_2" @update:value="updateGradient_2"></n-color-picker>
   </div>
   <br>
   <div class="center">

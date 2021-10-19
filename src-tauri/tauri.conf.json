@@ -53,10 +53,7 @@
       "active": false
     },
     "allowlist": {
-      "all": true,
-      "globalShortcut": {
-        "all": true
-      }
+      "all": true
     },
     "windows": [
       {

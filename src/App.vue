@@ -2,13 +2,14 @@
 import { darkTheme } from "naive-ui";
 import { computed, ref, watch } from "vue";
 import { mainStore } from "./store/pinia";
-import { appWindow } from "@tauri-apps/api/window";
+import { appWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { useRouter } from "vue-router";
 import { register, unregisterAll } from "@tauri-apps/api/globalShortcut";
 
 // Variables
 const store = mainStore()
 const router = useRouter()
+const settingsMode = ref(false)
 const theme = ref(store.theme == 'light' ? null : darkTheme)
 const mode = ref(computed(() => store.mode))
 const visible = ref(false)
@@ -17,6 +18,10 @@ const visible = ref(false)
 const changeTheme = () => {
   theme.value = theme.value == null ? darkTheme : null
   store.theme = theme.value == null ? 'light' : 'dark'
+}
+
+const changeSettingsMode = () => {
+  settingsMode.value = !settingsMode.value
 }
 
 const registerShortcuts = async () => {
@@ -34,9 +39,10 @@ const registerShortcuts = async () => {
 
 // App init
 appWindow.listen("settings", async () => {
+  await appWindow.setSize(new PhysicalSize(800, 600))
   await appWindow.show()
   await appWindow.setAlwaysOnTop(true)
-  await appWindow.center()
+  settingsMode.value = true
   router.push("/settings")
 })
 
@@ -54,6 +60,8 @@ appWindow.setSkipTaskbar(mode.value == "quick" ? true : false)
 unregisterAll()
 if (mode.value != 'companion') {
   registerShortcuts()
+  appWindow.setSize(new PhysicalSize(800, 350))
+  appWindow.center()
 } else {
   appWindow.show()
   appWindow.setFocus()
@@ -73,16 +81,26 @@ watch(computed(() => store.mode), async () => {
     register("CmdOrControl+U", () => {
       return
     })
-  } else {
+    // TODO : Change the window size into a state variable so it can be persisted
+    if (!settingsMode.value) {
+      await appWindow.setSize(new PhysicalSize(800, 350))
+    }
+  } else if (mode.value == "quick") {
     unregisterAll()
     registerShortcuts()
+    if (!settingsMode.value) {
+      await appWindow.setSize(new PhysicalSize(800, 350))
+    }
+    await appWindow.center()
   }
 })
 </script>
 
 <template>
   <n-config-provider :theme="theme">
-    <router-view @changeTheme="changeTheme"></router-view>
+    <n-message-provider>
+      <router-view @changeTheme="changeTheme" @changeSettingsMode="changeSettingsMode"></router-view>
+    </n-message-provider>
     <n-global-style />
   </n-config-provider>
 </template>
