@@ -39,7 +39,7 @@ const registerShortcuts = async () => {
 
 // App init
 appWindow.listen("settings", async () => {
-  await appWindow.setSize(new PhysicalSize(800, 600))
+  await appWindow.setSize(new PhysicalSize(800, 615))
   await appWindow.show()
   await appWindow.setAlwaysOnTop(true)
   settingsMode.value = true

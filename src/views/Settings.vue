@@ -14,16 +14,6 @@ const router = useRouter()
 const message = useMessage()
 
 // Functions
-const changeIcon = () => {
-  if (theme.value === "dark") {
-    theme.value = "light"
-    message.info("Light Mode")
-  } else {
-    theme.value = "dark"
-    message.info("Dark Mode")
-  }
-}
-
 const done = async () => {
   await appWindow.setAlwaysOnTop(false)
   await appWindow.setSize(new PhysicalSize(800, 350))
@@ -111,9 +101,9 @@ const quickMode = () => {
             </n-layout-sider>
             <n-layout-content content-style="padding: 24px;">
               <div class="center">
-                <n-button @click="$emit('changeTheme'); changeIcon()">
-                  <i-akar-icons:moon-fill v-if="theme === 'dark'"></i-akar-icons:moon-fill>
-                  <i-akar-icons:sun-fill v-if="theme === 'light'"></i-akar-icons:sun-fill>
+                <n-button @click="$emit('changeTheme')">
+                  <i-akar-icons:moon-fill v-if="store.theme === 'dark'"></i-akar-icons:moon-fill>
+                  <i-akar-icons:sun-fill v-if="store.theme === 'light'"></i-akar-icons:sun-fill>
                 </n-button>
               </div>
             </n-layout-content>

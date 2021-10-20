@@ -22,7 +22,12 @@ const output = ref(computed(() => {
     <n-input-number :show-button="false" v-model:value="input">
       <template #suffix>{{ unit_1 }}</template>
     </n-input-number>
-    <n-input-number :show-button="false" v-model:value="output" style="pointer-events: none;" placeholder="">
+    <n-input-number 
+      :show-button="false"
+      v-model:value="output"
+      style="pointer-events: none;"
+      placeholder=""
+    >
       <template #suffix>{{ unit_2 }}</template>
     </n-input-number>
   </n-space>

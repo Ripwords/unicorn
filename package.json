@@ -1,6 +1,6 @@
 {
   "name": "unicorn",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "scripts": {
     "dev": "concurrently -k \"vue-devtools\" \"pnpm vt dev\"",
     "build": "vue-tsc --noEmit && vite build",
@@ -10,6 +10,7 @@
   "dependencies": {
     "@tauri-apps/api": "^1.0.0-beta.8",
     "@vueuse/core": "^6.6.1",
+    "auto-launch": "^5.0.5",
     "convert-units": "3.0.0-beta.2",
     "pinia": "2.0.0-rc.13",
     "vue": "^3.2.20",

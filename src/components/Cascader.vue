@@ -95,7 +95,11 @@ appWindow.listen("tauri://blur", () => {
   <br>
   <div class="center">
     <div style="width: 60%;">
-      <Input v-if="value && unitToConvert" :unit_1="value" :unit_2="unitToConvert"/> 
+      <Input 
+        v-if="value && unitToConvert" 
+        :unit_1="value" 
+        :unit_2="unitToConvert"
+      /> 
     </div>
   </div>
 </template>
