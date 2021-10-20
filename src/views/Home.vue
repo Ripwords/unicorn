@@ -18,7 +18,7 @@ const changeTitle = (event: AllMeasuresUnits | undefined) => {
   if (event != undefined) {
     title.value = capitalizeFirstLetter(convert().describe(event).measure)
   } else {
-    title.value = "Unicorn"
+    title.value = "Unicorn 🦄"
   }
 }
 </script>
@@ -31,7 +31,7 @@ const changeTitle = (event: AllMeasuresUnits | undefined) => {
         from: store.gradient_1,
         to: store.gradient_2
       }"
-    >{{ title }} 🦄</n-gradient-text>
+    >{{ title }}</n-gradient-text>
   </n-h1>
   <Cascader @valueChange="changeTitle"/>
   
