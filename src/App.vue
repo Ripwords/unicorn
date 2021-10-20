@@ -1,18 +1,16 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { darkTheme } from "naive-ui";
-import { computed, ref, watch } from "vue";
-import { mainStore } from "./store/pinia";
-import { appWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { useRouter } from "vue-router";
+import { mainStore } from "./store/pinia";
+import { computed, ref, watch } from "vue";
+import { appWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { register, unregisterAll } from "@tauri-apps/api/globalShortcut";
 
 // Variables
 const store = mainStore()
 const router = useRouter()
 const settingsMode = ref(false)
-const theme = ref(store.theme == 'light' ? null : darkTheme)
-const mode = ref(computed(() => store.mode))
-const visible = ref(false)
+const theme = ref(store.theme == "light" ? null : darkTheme)
 
 // Functions
 const changeTheme = () => {
@@ -20,88 +18,93 @@ const changeTheme = () => {
   store.theme = theme.value == null ? 'light' : 'dark'
 }
 
-const changeSettingsMode = () => {
-  settingsMode.value = !settingsMode.value
-}
-
 const registerShortcuts = async () => {
   await register("CmdOrControl+U", async () => {
     await appWindow.setFocus()
-    if (visible.value) {
+    if (await appWindow.isVisible()) {
       await appWindow.hide()
-      visible.value = false
     } else {
       await appWindow.show()
-      visible.value = true
+      await appWindow.setFocus()
     }
   })
 }
 
-// App init
-appWindow.listen("settings", async () => {
-  await appWindow.setSize(new PhysicalSize(800, 615))
-  await appWindow.center()
-  await appWindow.show()
-  await appWindow.setAlwaysOnTop(true)
-  settingsMode.value = true
-  router.push("/settings")
-})
+const settingsChanged = async () => {
+  await appWindow.setAlwaysOnTop(false)
+  settingsMode.value = false
+}
 
-// Tauri events
-appWindow.listen("tauri://blur", async () => {
-  visible.value = false
-  if (visible.value) {
-    await appWindow.hide()
+const setSettingsWindow = async () => {
+  if (store.mode == "companion") {
+    await appWindow.setSize(new PhysicalSize(800, 615))
+  } else if (store.mode == "quick") {
+    await appWindow.setSize(new PhysicalSize(800, 575))
   }
-})
+}
 
-appWindow.setDecorations(mode.value == "companion" ? true : false)
-appWindow.setSkipTaskbar(mode.value == "quick" ? true : false)
-
-// register global shortcut
+// App Init & events
+appWindow.setDecorations(store.mode == "companion" ? true : false)
+appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
 unregisterAll()
-if (mode.value == 'quick') {
+if (store.mode == 'quick') {
   registerShortcuts()
   appWindow.setSize(new PhysicalSize(800, 350))
   appWindow.center()
-} else {
+} else if (store.mode == "companion") {
+  appWindow.setSize(new PhysicalSize(800, 350))
   appWindow.show()
   appWindow.setFocus()
+  unregisterAll()
   register("CmdOrControl+U", () => {
     return
   })
 }
 
+appWindow.listen("settings", async () => {
+  await setSettingsWindow()
+  await appWindow.center()
+  await appWindow.setAlwaysOnTop(true)
+  await appWindow.show()
+  settingsMode.value = true
+  router.push('/settings')
+})
+
+appWindow.listen("tauri://blur", async () => {
+  if (await appWindow.isVisible()) {
+    if (store.mode == "quick" && !settingsMode.value) {
+      await appWindow.hide()
+    }
+  }
+})
+
 // Watcher
 watch(computed(() => store.mode), async () => {
-  await appWindow.setDecorations(mode.value == "companion" ? true : false)
-  await appWindow.setSkipTaskbar(mode.value == "quick" ? true : false)
-  if (mode.value == "companion") {
-    unregisterAll()
-    await appWindow.show()
-    await appWindow.setFocus()
-    register("CmdOrControl+U", () => {
+  await appWindow.setDecorations(store.mode == "companion" ? true : false)
+  await appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
+  if (!settingsMode.value) {
+    await appWindow.setSize(new PhysicalSize(800, 350))
+  }
+  if (store.mode == "companion") {
+    await unregisterAll()
+    await register("CmdOrControl+U", () => {
       return
     })
-    // TODO : Change the window size into a state variable so it can be persisted
-    if (!settingsMode.value) {
-      await appWindow.setSize(new PhysicalSize(800, 350))
-    }
-  } else if (mode.value == "quick") {
-    unregisterAll()
-    registerShortcuts()
-    if (!settingsMode.value) {
-      await appWindow.setSize(new PhysicalSize(800, 350))
-    }
+    await appWindow.show()
+    await appWindow.setFocus()
+  } else if (store.mode == "quick") {
+    await unregisterAll()
+    await registerShortcuts()
     await appWindow.center()
   }
+  await setSettingsWindow()
 })
 </script>
 
 <template>
   <n-config-provider :theme="theme">
     <n-message-provider>
-      <router-view @changeTheme="changeTheme" @changeSettingsMode="changeSettingsMode"></router-view>
+      <router-view @changeTheme="changeTheme" @changeSettingsMode="settingsChanged"></router-view>
     </n-message-provider>
     <n-global-style />
   </n-config-provider>

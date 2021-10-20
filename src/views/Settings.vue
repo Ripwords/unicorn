@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { appWindow, PhysicalSize } from "@tauri-apps/api/window";
-import { ref } from "vue";
+import { useTimeout } from "@vueuse/core";
 import { mainStore } from "../store/pinia";
 import { useMessage } from "naive-ui";  
 
@@ -9,17 +9,13 @@ defineEmits(mainStore().emits)
 
 // Variables
 const store = mainStore()
-const theme = ref("dark")
 const router = useRouter()
 const message = useMessage()
 
 // Functions
 const done = async () => {
-  await appWindow.setAlwaysOnTop(false)
   await appWindow.setSize(new PhysicalSize(800, 350))
-  if (store.mode == "quick") {
-    await appWindow.hide()
-  }
+  useTimeout(200)
   router.push("/home")
 }
 
@@ -123,7 +119,7 @@ const quickMode = () => {
       </n-space>
       <br>
       <div class="center">
-        <n-button @click="done()">Done</n-button>
+        <n-button @click="done(); $emit('changeSettingsMode')">Done</n-button>
       </div>
     </n-card>
   </div>
