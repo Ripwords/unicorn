@@ -40,6 +40,7 @@ const registerShortcuts = async () => {
 // App init
 appWindow.listen("settings", async () => {
   await appWindow.setSize(new PhysicalSize(800, 615))
+  await appWindow.center()
   await appWindow.show()
   await appWindow.setAlwaysOnTop(true)
   settingsMode.value = true
@@ -47,9 +48,10 @@ appWindow.listen("settings", async () => {
 })
 
 // Tauri events
-appWindow.listen("tauri://blur", () => {
+appWindow.listen("tauri://blur", async () => {
   if (visible.value) {
     visible.value = false
+    await appWindow.hide()
   }
 })
 
@@ -58,7 +60,7 @@ appWindow.setSkipTaskbar(mode.value == "quick" ? true : false)
 
 // register global shortcut
 unregisterAll()
-if (mode.value != 'companion') {
+if (mode.value == 'quick') {
   registerShortcuts()
   appWindow.setSize(new PhysicalSize(800, 350))
   appWindow.center()
