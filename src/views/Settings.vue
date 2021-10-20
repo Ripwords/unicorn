@@ -53,32 +53,88 @@ const quickMode = () => {
 </script>
 
 <template>
-  <n-h1 class="center" style="margin-top: 25px;">
+  <n-h1 class="center" style="margin-top: 12px;">
     <n-gradient-text
       :gradient="{
+        deg: store.gradientDegree,
         from: store.gradient_1,
         to: store.gradient_2
       }"
     >Settings</n-gradient-text>
   </n-h1>
   <div class="center">
-    <n-button @click="$emit('changeTheme'); changeIcon()">
-      <i-akar-icons:moon-fill v-if="theme === 'dark'"></i-akar-icons:moon-fill>
-      <i-akar-icons:sun-fill v-if="theme === 'light'"></i-akar-icons:sun-fill>
-    </n-button>
-  </div>
-  <div class="center">
-    <n-button @click="companionMode()">Companion</n-button>
-    <n-button @click="quickMode()">Quick</n-button>
-  </div>
-  <div class="center">
-    <n-color-picker style="width: 30%;" :value="store.gradient_1" @update:value="updateGradient_1"></n-color-picker>
-  </div>
-  <div class="center">
-    <n-color-picker style="width: 30%;" :value="store.gradient_2" @update:value="updateGradient_2"></n-color-picker>
-  </div>
-  <br>
-  <div class="center">
-    <n-button @click="done()">Done</n-button>
+    <n-card style="width: 70%;">
+      <n-space vertical size="large">
+        <n-layout>
+          <n-layout-header>
+            <n-gradient-text
+              :gradient="{
+                deg: store.gradientDegree,
+                from: store.gradient_1,
+                to: store.gradient_2
+              }"
+            >Title Gradients</n-gradient-text>
+          </n-layout-header>
+          <n-layout has-sider>
+            <n-layout-sider content-style="padding: 24px;">
+              Gradient From
+            </n-layout-sider>
+            <n-layout-content content-style="padding: 24px;">
+              <div class="center">
+                <n-color-picker style="width: 90%;" :value="store.gradient_1" @update:value="updateGradient_1"></n-color-picker>
+              </div>
+            </n-layout-content>
+          </n-layout>
+          <n-layout has-sider>
+            <n-layout-sider content-style="padding: 24px;">
+              Gradient To
+            </n-layout-sider>
+            <n-layout-content content-style="padding: 24px;">
+              <div class="center">
+                <n-color-picker style="width: 90%;" :value="store.gradient_2" @update:value="updateGradient_2"></n-color-picker>
+              </div>
+            </n-layout-content>
+          </n-layout>
+          <n-layout has-sider>
+            <n-layout-sider content-style="padding: 24px;">
+              Gradient Degree
+            </n-layout-sider>
+            <n-layout-content content-style="padding: 24px;">
+              <div class="center">
+                <n-slider v-model:value="store.gradientDegree" :step="1" :max="180" :min="-180"/>
+              </div>
+            </n-layout-content>
+          </n-layout>
+          <n-layout has-sider>
+            <n-layout-sider content-style="padding: 24px;">
+              Theme
+            </n-layout-sider>
+            <n-layout-content content-style="padding: 24px;">
+              <div class="center">
+                <n-button @click="$emit('changeTheme'); changeIcon()">
+                  <i-akar-icons:moon-fill v-if="theme === 'dark'"></i-akar-icons:moon-fill>
+                  <i-akar-icons:sun-fill v-if="theme === 'light'"></i-akar-icons:sun-fill>
+                </n-button>
+              </div>
+            </n-layout-content>
+          </n-layout>
+          <n-layout has-sider>
+            <n-layout-sider content-style="padding: 24px;">
+              App Mode
+            </n-layout-sider>
+            <n-layout-content content-style="padding: 24px;">
+              <div class="center">
+                <n-button @click="companionMode()">Companion</n-button>
+                <n-button @click="quickMode()">Quick</n-button>
+              </div>
+            </n-layout-content>
+          </n-layout>
+        </n-layout>
+      </n-space>
+      <br>
+      <div class="center">
+        <n-button @click="done()">Done</n-button>
+      </div>
+    </n-card>
   </div>
 </template>

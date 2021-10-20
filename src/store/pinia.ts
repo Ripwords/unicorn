@@ -12,7 +12,8 @@ export const mainStore = defineStore('main', {
         'changeSettingsMode'
       ],
       gradient_1: useStorage('gradient_1', "#7b0d8f"),
-      gradient_2: useStorage('gradient_2', "#79badd")
+      gradient_2: useStorage('gradient_2', "#79badd"),
+      gradientDegree: useStorage('gradientDegree', 180)
     }
   }
 })
