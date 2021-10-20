@@ -1,6 +1,6 @@
 {
   "name": "unicorn",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "scripts": {
     "dev": "concurrently -k \"vue-devtools\" \"pnpm vt dev\"",
     "build": "vue-tsc --noEmit && vite build",
