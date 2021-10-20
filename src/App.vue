@@ -49,8 +49,8 @@ appWindow.listen("settings", async () => {
 
 // Tauri events
 appWindow.listen("tauri://blur", async () => {
+  visible.value = false
   if (visible.value) {
-    visible.value = false
     await appWindow.hide()
   }
 })
