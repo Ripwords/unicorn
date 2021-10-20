@@ -11,7 +11,7 @@ defineEmits(mainStore().emits)
 
 // Variables
 const store = mainStore()
-const title = ref("Unicorn")
+const title = ref("Unicorn 🦄")
 
 // Functions
 const changeTitle = (event: AllMeasuresUnits | undefined) => {
