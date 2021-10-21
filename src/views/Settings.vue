@@ -16,6 +16,7 @@ const showModal = ref(false)
 const al = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 const ctrl = ref(store.trigger.includes("Ctrl"))
 const alt = ref(store.trigger.includes("Alt"))
+const shift = ref(store.trigger.includes("Shift"))
 const key = ref(store.trigger[store.trigger.length - 1])
 
 // Functions
@@ -54,17 +55,13 @@ const options = () => {
   return ar
 }
 
-watch([key, alt, ctrl], () => {
-  if (ctrl.value && alt.value) {
-    store.trigger = `Ctrl+Alt+${key.value}`
-  } else if (ctrl.value) {
-    store.trigger = `Ctrl+${key.value}`
-  } else if (alt.value) {
-    store.trigger = `Alt+${key.value}`
-  } else {
+watch([key, alt, ctrl, shift], () => {
+  if (!(alt.value || ctrl.value || shift.value)) {
     message.error("At least one modifier has to be chosen")
     ctrl.value = true
     store.trigger = `Ctrl+${key.value}`
+  } else {
+    store.trigger = `${ctrl.value ? "Ctrl+" : ""}${alt.value ? "Alt+" : ""}${shift.value ? "Shift+" : ""}${key.value}`
   }
 })
 </script>
@@ -155,7 +152,8 @@ watch([key, alt, ctrl], () => {
                 <n-button>{{ store.trigger }}</n-button>
               </div>
               <n-modal v-model:show="showModal">
-                <n-card style="width: 43%; height: 15%;" title="Shortcut Trigger" :bordered="false" size="huge">
+                <n-card style="width: 54%; height: 15%;" title="Shortcut Trigger" :bordered="false" size="huge">
+                <div class="center">
                   <n-space>
                     <n-switch style="margin-right: 2%;" v-model:value="ctrl">
                       <template #checked>Ctrl</template>
@@ -167,15 +165,21 @@ watch([key, alt, ctrl], () => {
                       <template #unchecked>Alt</template>
                     </n-switch>
                     +
+                    <n-switch style="margin-left: 2%; margin-right: 2%;" v-model:value="shift">
+                      <template #checked>Shift</template>
+                      <template #unchecked>Shift</template>
+                    </n-switch>
+                    +
                     <n-cascader
                       v-model:value="key"
                       placeholder="Key"
                       expand-trigger="hover"
                       :options="options()"
-                      style="width: 80px;"
+                      style="width: 53px;"
                       :filterable="true"
                     />
                   </n-space>
+                </div>
                 </n-card>
               </n-modal>
             </n-layout-content>
