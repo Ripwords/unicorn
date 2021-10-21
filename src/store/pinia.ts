@@ -13,7 +13,8 @@ export const mainStore = defineStore('main', {
       ],
       gradient_1: useStorage('gradient_1', "#7b0d8f"),
       gradient_2: useStorage('gradient_2', "#79badd"),
-      gradientDegree: useStorage('gradientDegree', 180)
+      gradientDegree: useStorage('gradientDegree', 180),
+      trigger: useStorage('trigger', "Ctrl+U")
     }
   }
 })

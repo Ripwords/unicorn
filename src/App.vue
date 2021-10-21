@@ -19,7 +19,7 @@ const changeTheme = () => {
 }
 
 const registerShortcuts = async () => {
-  await register("CmdOrControl+U", async () => {
+  await register(store.trigger, async () => {
     await appWindow.setFocus()
     if (await appWindow.isVisible()) {
       await appWindow.hide()
@@ -37,9 +37,9 @@ const settingsChanged = async () => {
 
 const setSettingsWindow = async () => {
   if (store.mode == "companion") {
-    await appWindow.setSize(new PhysicalSize(800, 615))
+    await appWindow.setSize(new PhysicalSize(800, 635))
   } else if (store.mode == "quick") {
-    await appWindow.setSize(new PhysicalSize(800, 575))
+    await appWindow.setSize(new PhysicalSize(800, 595))
   }
 }
 
@@ -56,7 +56,7 @@ if (store.mode == 'quick') {
   appWindow.show()
   appWindow.setFocus()
   unregisterAll()
-  register("CmdOrControl+U", () => {
+  register(store.trigger, () => {
     return
   })
 }
@@ -87,7 +87,7 @@ watch(computed(() => store.mode), async () => {
   }
   if (store.mode == "companion") {
     await unregisterAll()
-    await register("CmdOrControl+U", () => {
+    await register(store.trigger, () => {
       return
     })
     await appWindow.show()
@@ -98,6 +98,18 @@ watch(computed(() => store.mode), async () => {
     await appWindow.center()
   }
   await setSettingsWindow()
+})
+
+watch(computed(() => store.trigger), async () => {
+  if (store.mode == "companion") {
+    await unregisterAll()
+    await register(store.trigger, () => {
+      return
+    })
+  } else if (store.mode == "quick") {
+    await unregisterAll()
+    await registerShortcuts()
+  }
 })
 </script>
 
@@ -114,5 +126,9 @@ watch(computed(() => store.mode), async () => {
 .center {
   display: flex;
   justify-content: center;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
 }
 </style>
