@@ -14,7 +14,11 @@ export const mainStore = defineStore('main', {
       gradient_1: useStorage('gradient_1', "#7b0d8f"),
       gradient_2: useStorage('gradient_2', "#79badd"),
       gradientDegree: useStorage('gradientDegree', 180),
-      trigger: useStorage('trigger', "Ctrl+U")
+      trigger: useStorage('trigger', "Ctrl+U"),
+      width: 800,
+      height: 635,
+      smHeight: 300,
+      winSizeDiff: 40
     }
   }
 })

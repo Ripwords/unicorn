@@ -20,7 +20,6 @@ const changeTheme = () => {
 
 const registerShortcuts = async () => {
   await register(store.trigger, async () => {
-    await appWindow.setFocus()
     if (await appWindow.isVisible()) {
       await appWindow.hide()
     } else {
@@ -37,22 +36,21 @@ const settingsChanged = async () => {
 
 const setSettingsWindow = async () => {
   if (store.mode == "companion") {
-    await appWindow.setSize(new PhysicalSize(800, 635))
+    await appWindow.setSize(new PhysicalSize(store.width, store.height))
   } else if (store.mode == "quick") {
-    await appWindow.setSize(new PhysicalSize(800, 595))
+    await appWindow.setSize(new PhysicalSize(store.width, store.height - store.winSizeDiff))
   }
 }
 
-// App Init & events
+// Initialize Application & event listening
 appWindow.setDecorations(store.mode == "companion" ? true : false)
 appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
-unregisterAll()
 if (store.mode == 'quick') {
   registerShortcuts()
-  appWindow.setSize(new PhysicalSize(800, 350))
+  appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
   appWindow.center()
 } else if (store.mode == "companion") {
-  appWindow.setSize(new PhysicalSize(800, 350))
+  appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
   appWindow.show()
   appWindow.setFocus()
   unregisterAll()
@@ -64,8 +62,8 @@ if (store.mode == 'quick') {
 appWindow.listen("settings", async () => {
   await setSettingsWindow()
   await appWindow.center()
-  await appWindow.setAlwaysOnTop(true)
   await appWindow.show()
+  await appWindow.setAlwaysOnTop(true)
   settingsMode.value = true
   router.push('/settings')
 })
@@ -83,7 +81,7 @@ watch(computed(() => store.mode), async () => {
   await appWindow.setDecorations(store.mode == "companion" ? true : false)
   await appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
   if (!settingsMode.value) {
-    await appWindow.setSize(new PhysicalSize(800, 350))
+    await appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
   }
   if (store.mode == "companion") {
     await unregisterAll()
