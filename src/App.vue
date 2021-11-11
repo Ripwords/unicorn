@@ -18,27 +18,27 @@ const changeTheme = () => {
   store.theme = theme.value == null ? 'light' : 'dark'
 }
 
-const registerShortcuts = async () => {
-  await register(store.trigger, async () => {
+const registerShortcuts = () => {
+  register(store.trigger, async () => {
     if (await appWindow.isVisible()) {
-      await appWindow.hide()
+      appWindow.hide()
     } else {
-      await appWindow.show()
-      await appWindow.setFocus()
+      appWindow.show()
+      appWindow.setFocus()
     }
   })
 }
 
-const settingsChanged = async () => {
-  await appWindow.setAlwaysOnTop(false)
+const settingsChanged = () => {
+  appWindow.setAlwaysOnTop(false)
   settingsMode.value = false
 }
 
-const setSettingsWindow = async () => {
+const setSettingsWindow = () => {
   if (store.mode == "companion") {
-    await appWindow.setSize(new PhysicalSize(store.width, store.height))
+    appWindow.setSize(new PhysicalSize(store.width, store.height))
   } else if (store.mode == "quick") {
-    await appWindow.setSize(new PhysicalSize(store.width, store.height - store.winSizeDiff))
+    appWindow.setSize(new PhysicalSize(store.width, store.height - store.winSizeDiff))
   }
 }
 
@@ -59,11 +59,11 @@ if (store.mode == 'quick') {
   })
 }
 
-appWindow.listen("settings", async () => {
-  await setSettingsWindow()
-  await appWindow.center()
-  await appWindow.show()
-  await appWindow.setAlwaysOnTop(true)
+appWindow.listen("settings", () => {
+  setSettingsWindow()
+  appWindow.center()
+  appWindow.show()
+  appWindow.setAlwaysOnTop(true)
   settingsMode.value = true
   router.push('/settings')
 })
@@ -71,42 +71,42 @@ appWindow.listen("settings", async () => {
 appWindow.listen("tauri://blur", async () => {
   if (await appWindow.isVisible()) {
     if (store.mode == "quick" && !settingsMode.value) {
-      await appWindow.hide()
+      appWindow.hide()
     }
   }
 })
 
 // Watcher
-watch(computed(() => store.mode), async () => {
-  await appWindow.setDecorations(store.mode == "companion" ? true : false)
-  await appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
+watch(computed(() => store.mode), () => {
+  appWindow.setDecorations(store.mode == "companion" ? true : false)
+  appWindow.setSkipTaskbar(store.mode == "quick" ? true : false)
   if (!settingsMode.value) {
-    await appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
+    appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
   }
   if (store.mode == "companion") {
-    await unregisterAll()
-    await register(store.trigger, () => {
+    unregisterAll()
+    register(store.trigger, () => {
       return
     })
-    await appWindow.show()
-    await appWindow.setFocus()
+    appWindow.show()
+    appWindow.setFocus()
   } else if (store.mode == "quick") {
-    await unregisterAll()
-    await registerShortcuts()
-    await appWindow.center()
+    unregisterAll()
+    registerShortcuts()
+    appWindow.center()
   }
-  await setSettingsWindow()
+  setSettingsWindow()
 })
 
-watch(computed(() => store.trigger), async () => {
+watch(computed(() => store.trigger), () => {
   if (store.mode == "companion") {
-    await unregisterAll()
-    await register(store.trigger, () => {
+    unregisterAll()
+    register(store.trigger, () => {
       return
     })
   } else if (store.mode == "quick") {
-    await unregisterAll()
-    await registerShortcuts()
+    unregisterAll()
+    registerShortcuts()
   }
 })
 </script>

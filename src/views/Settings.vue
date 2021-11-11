@@ -20,8 +20,8 @@ const shift = ref(store.trigger.includes("Shift"))
 const key = ref(store.trigger[store.trigger.length - 1])
 
 // Functions
-const done = async () => {
-  await appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
+const done = () => {
+  appWindow.setSize(new PhysicalSize(store.width, store.smHeight))
   useTimeout(200)
   router.push("/home")
 }
