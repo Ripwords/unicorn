@@ -11,7 +11,6 @@ const store = mainStore()
 const router = useRouter()
 const settingsMode = ref(false)
 const theme = ref(store.theme == "light" ? null : darkTheme)
-
 // Functions
 const changeTheme = () => {
   theme.value = theme.value == null ? darkTheme : null
